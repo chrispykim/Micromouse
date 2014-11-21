@@ -9,7 +9,7 @@ void correct_path(some variables)
   int total=0; 
   
   SP = something;
-  PV = somethingElse;
+  PV = getError();
   
   error = SP-PV; // error value on which PI actions take place
   
@@ -22,4 +22,5 @@ void correct_path(some variables)
   }
 
   doSomethingToController(total);
+  // adjust voltage to motors
 }
