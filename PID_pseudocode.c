@@ -32,7 +32,7 @@ void PID(Position) {
 
   if (controllerOutput < 0){  // Check which direction to go.
     
-    digitalWrite (Direction,LOW);  // change direction as needed
+    digitalWrite (Direction,LOW);  // Direction is some pin#
   }
   else { // depending on the sign of Error
     
