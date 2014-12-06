@@ -1,30 +1,54 @@
-void PID(some variables) {
+void PID(Position) {
 
-  static int previous_error = 0;
+  static int previous_error;  // stuff for derivative
+  static int ScaleFactor = SOME_CONSTANT;  // idk
   static int SP = DISTANCE_TO_WALL;  // TBD after we know dimensions of mouse
-  static int PV;  // PV (process value) is  actual value
-  static int error;	 // error variable
-  static int P, I, D = 0;  // proportional(P), integral (I), & derivative(D) control action variables
+  static int Actual;  // actual distance to wall
+  static int Error;	 // error variable
   static int Kp = constantP, Ki = constantI, Kd = constantD;  // gain constants for PID controller 
-  int controllerOutput = 0; 
+  static int Threshold = SOME_OTHER_CONSTANT;  // preventing integral windup (idk what to put rn)
+  int controllerOutput = 0;  // value sent to motors
+  int P,I,D;  // the things for the controllerOutput calculation
+  static int Sum;  // accumulation of errors for integral
   
-  PV = getError();  // error obtained from IR sensors
-  error = SP-PV;  // error value on which PID actions take place
+  Actual = analogRead(Position);  // error obtained from IR sensors
+  Error = SP-Actual;  // error value on which PID actions take place
   
-  if (error != 0) { 
-    
-    P = error * Kp;      // proportional control (P)
-    I = takeIntegral(error) * Ki;  // integral action control (I) 
-    D = takeDerivative(error)*Kd;  // derivative action control (D)
-    previous_error = error;
-    controllerOutput = P+I+D;
+  if (abs(Error) < Threshold) {  // accumulation of error too big
+  
+    Sum += error;
   }
+  else {
+  
+    Sum = 0;
+  }
+    
+  P = error * Kp;  // proportional control (P)
+  I = takeIntegral(Sum) * Ki;  // integral action control (I)
+  D = takeDerivative(error-previous_error) * Kd;  // derivative action control (D)
+  previous_error = error;  // save current value for next time
+  controllerOutput = P+I+D;
+  controllerOutput = controllerOutput*ScaleFactor; // scale Drive to be in the range 0-255 
 
-  setSpeed(controllerOutput);
-  // adjust voltage to motors
+  if (controllerOutput < 0){  // Check which direction to go.
+    
+    digitalWrite (Direction,LOW);  // change direction as needed
+  }
+  else { // depending on the sign of Error
+    
+    digitalWrite (Direction,HIGH);
+  }
+  
+  if (abs(controllerOutput)>255) {
+    
+    Drive=255;
+  }
+  
+  analogWrite (Motor,controllerOutput); // Motor is some pin#
 }
 
 void setSpeed(int controllerOutput) {
 
     
 }
+
