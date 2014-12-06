@@ -28,7 +28,7 @@ void PID(Position) {
   I = Sum;  // integral action control (I)
   dt = millis();  // time since program started running;
   D = (Error-previous_error)/dt;  // derivative action control (D)
-  previous_error = error;  // save current value for next time
+  previous_error = Error;  // save current value for next time
   controllerOutput = P*Kp + I*Ki + D*Kd;  // weighted sum for motor
   controllerOutput = controllerOutput*ScaleFactor; // scale Drive to be in the range 0-255 
 
