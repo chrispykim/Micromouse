@@ -10,24 +10,26 @@ void PID(Position) {
   int controllerOutput = 0;  // value sent to motors
   int P,I,D;  // the things for the controllerOutput calculation
   static int Sum;  // accumulation of errors for integral
+  int dt;  // time variable for derivative calculation
   
   Actual = analogRead(Position);  // error obtained from IR sensors
   Error = SP-Actual;  // error value on which PID actions take place
   
   if (abs(Error) < Threshold) {  // accumulation of error too big
   
-    Sum += error;
+    Sum += Error;
   }
   else {
   
     Sum = 0;
   }
     
-  P = error * Kp;  // proportional control (P)
-  I = takeIntegral(Sum) * Ki;  // integral action control (I)
-  D = takeDerivative(error-previous_error) * Kd;  // derivative action control (D)
+  P = Error;  // proportional control (P)
+  I = Sum;  // integral action control (I)
+  dt = millis();  // time since program started running;
+  D = (Error-previous_error)/dt;  // derivative action control (D)
   previous_error = error;  // save current value for next time
-  controllerOutput = P+I+D;
+  controllerOutput = P*Kp + I*Ki + D*Kd;  // weighted sum for motor
   controllerOutput = controllerOutput*ScaleFactor; // scale Drive to be in the range 0-255 
 
   if (controllerOutput < 0){  // Check which direction to go.
@@ -41,7 +43,7 @@ void PID(Position) {
   
   if (abs(controllerOutput)>255) {
     
-    Drive=255;
+    controllerOutput=255;
   }
   
   analogWrite (Motor,controllerOutput); // Motor is some pin#
