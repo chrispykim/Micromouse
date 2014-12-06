@@ -1,4 +1,4 @@
-void PID(Position) {
+void PID() {
 
   static int previous_error;  // stuff for derivative
   static int ScaleFactor = SOME_CONSTANT;  // idk
@@ -12,7 +12,7 @@ void PID(Position) {
   static int Sum;  // accumulation of errors for integral
   int dt;  // time variable for derivative calculation
   
-  Actual = analogRead(Position);  // error obtained from IR sensors
+  Actual = analogRead(Position);  // Position is some pin#
   Error = SP-Actual;  // error value on which PID actions take place
   
   if (abs(Error) < Threshold) {  // accumulation of error too big
