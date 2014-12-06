@@ -46,9 +46,3 @@ void PID(Position) {
   
   analogWrite (Motor,controllerOutput); // Motor is some pin#
 }
-
-void setSpeed(int controllerOutput) {
-
-    
-}
-
