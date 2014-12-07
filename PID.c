@@ -9,10 +9,12 @@ void setup() {
   // pin #'s to be changed later
   LeftSensor = 1;
   RightSensor = 2;
-  Motor = 3;
+  MotorLeft = 3;
+  MotorRight = 4;
   pinMode(LeftSensor,INPUT);  // position left
   pinMode(RightSensor,INPUT);  // position right
-  pinMode(Motor,OUTPUT);  // motor pin
+  pinMode(MotorLeft,OUTPUT);  // motor left pin
+  pinMode(MotorRight,OUTPUT);  // motor right pin
 }
 
 void loop() {
