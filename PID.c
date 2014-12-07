@@ -49,11 +49,7 @@ void PID() {
   previous_error = Error;  // save current value for next time
   controllerOutput = P*Kp + I*Ki + D*Kd;  // weighted sum for motor
   controllerOutput *= ScaleFactor; // scale Drive to be in the range 0-255 
-
-  if (abs(controllerOutput)>255) {
-    
-    controllerOutput=255;
-  }
+  constrain(controllerOutput, -255, 255);
 
   if (controllerOutput < 0){  // Check which motor to change.
     
