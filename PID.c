@@ -1,11 +1,14 @@
 void setup() {
 
-  static int Sum = 0;  // integral stuff
-  static int ScaleFactor = SOME_CONSTANT;  // idk
-  static int Kp = constantP, Ki = constantI, Kd = constantD;  // gain constants for PID controller 
-  static int Threshold = SOME_OTHER_CONSTANT;  // preventing integral windup (idk what to put rn)
-  static int previous_error = analogRead(LeftSensor) - analogRead(RightSensor); // error value to initialize
-  static const int DELAY = 15;
+  int Sum = 0;  
+  int ScaleFactor = 1;  // TBD
+  int Kp = 1, Ki = 1, Kd = 1;  // constants for PID controller (TBD)
+  int Threshold = 1;  // TBD
+  int previous_error = analogRead(LeftSensor) - analogRead(RightSensor); // error value to initialize
+  const int DELAY = 15;  // TBD
+  const int LEFT_DEFAULT_SPEED = 1;  // TBD
+  const int RIGHT_DEFAULT_SPEED = 1;  // TBD
+  const int DISTANCE_TO_WALL = 1;  // TBD
   // pin #'s to be changed later
   LeftSensor = 1;
   RightSensor = 2;
@@ -23,41 +26,56 @@ void loop() {
   PID(); 
 }
 
+int Integral(int error) {
+
+  if (abs(error) < Threshold) {
+    Sum += error;
+  }
+  else {
+    Sum = 0;
+  }
+  return Sum;
+}
+
 void PID() {
 
   int ActualLeft, ActualRight;  // actual distance to wall
-  int Error;	 // error variable
   int controllerOutput = 0;  // value sent to motors
   int P,I,D;  // the things for the controllerOutput calculation
   
   ActualLeft = analogRead(LeftSensor); 
   ActualRight = analogRead(RightSensor);  
-  Error = ActualLeft-ActualRight;  // error value on which PID actions take place
   
-  if (abs(Error) < Threshold) {  // accumulation of error too big
-  
-    Sum += Error;
+  if (ActualLeft <= DISTANCE_TO_WALL && ActualRight <= DISTANCE_TO_WALL) {
+
+    P = ActualLeft - ActualRight;
+    I = Integral(P);
+    D = (P - previous_error)/DELAY;
+  } 
+  else if (ActualLeft <= DISTANCE_TO_WALL && ActualRight > DISTANCE_TO_WALL) {
+
+    P = (ActualLeft - DISTANCE_TO_WALL)*2;
+    I = Integral(P);
+    D = (P - previous_error)/DELAY;
+  } 
+  else if (ActualLeft > DISTANCE_TO_WALL && ActualRight <= DISTANCE_TO_WALL) {
+
+    P = (DISTANCE_TO_WALL - ActualRight)*2;
+    I = Integral(P);
+    D = (P - previous_error)/DELAY;
   }
   else {
-  
-    Sum = 0;
+
+    P = 0;
+    I = 0;
+    D = 0;
   }
-    
-  P = Error;  // proportional control (P)
-  I = Sum;  // integral action control (I)
-  D = (Error - previous_error)/DELAY;  // derivative action control (D)
-  previous_error = Error;  // save current value for next time
+
+  previous_error = P;  // save current value for next time
   controllerOutput = P*Kp + I*Ki + D*Kd;  // weighted sum for motor
   controllerOutput *= ScaleFactor; // scale Drive to be in the range 0-255 
   constrain(controllerOutput, -255, 255);
-
-  if (controllerOutput < 0){  // Check which motor to change.
     
-    analogWrite(MotorLeft,abs(controllerOutput));  // not really sure what to do here
-    // what do we tell right motor to do???
-  }
-  else { // depending on the sign of Error
-    
-    analogWrite(MotorRight,abs(controllerOutput);
-  }
+  analogWrite(MotorLeft,LEFT_DEFAULT_SPEED - controllerOutput);  // not entirely sure what to do here
+  analogWrite(MotorRight,RIGHT_DEFAULT_SPEED + controllerOutput);
 }
