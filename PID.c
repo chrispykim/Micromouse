@@ -76,6 +76,6 @@ void PID() {
   controllerOutput *= ScaleFactor; // scale Drive to be in the range 0-255 
   constrain(controllerOutput, -255, 255);
     
-  analogWrite(MotorLeft,LEFT_DEFAULT_SPEED - controllerOutput);  // not entirely sure what to do here
+  analogWrite(MotorLeft,LEFT_DEFAULT_SPEED - controllerOutput);  
   analogWrite(MotorRight,RIGHT_DEFAULT_SPEED + controllerOutput);
 }
