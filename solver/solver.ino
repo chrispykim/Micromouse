@@ -1,16 +1,16 @@
+//Custom header files
+#include <coord.h>
+#include <entry.h>
+
 #include <StackList.h>
 
-//Include custom data types
-#include "coord.h"
-#include "entry.h"
-
-  //Define some global constants
-  #define X 16
-  #define Y 16
+//Define some global constants
+#define X 16
+#define Y 16
     
-  entry maze[Y][X];
-  //N,S,E,W
-  int headings[] = {1,2,4,8};
+entry maze[Y][X];
+//N,S,E,W
+int headings[] = {1,2,4,8};
 
 void setup(){
   //instantiate an empty maze
