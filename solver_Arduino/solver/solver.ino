@@ -325,7 +325,7 @@ OUTPUT: Update maze for learned walls
 void floodFillUpdate(coord currCoord, coord desired[]){
   StackList<coord> entries;
   
-  maze[currCoord.y][currCoord.x].walls=readCurrent();
+  maze[currCoord.y][currCoord.x].walls=0;
   entries.push(currCoord);
   
   for(int i=0; i<sizeof(headings); i++){
