@@ -211,15 +211,98 @@ This function makes calls to the dispatcher to get the following info
   -orientation
   -surrounding walls
 Using orientation and walls, this information is mapped to a map integer in the global coordinate frame
-*/
-int readCurrent(){
-  //TODO: Fill this bitch out
-  return 0;
+
+byte readCurrent(){
+  byte wallReading = 15;
+  byte north = 0;
+  byte south = 0;
+  byte east = 0;
+  byte west = 0;
+  switch(globalHeading){
+    case 1:
+      //if the forward sensor is tripped
+      if(dispatch.irValues[0]>100){
+        //set north to 1
+        north = 1;
+      }
+      //if the right sensor is tripped
+      if(dispatch.irValues[4]>100){
+        //set east to 4
+        east = 4;
+      }
+      //if the left sensor is tripped
+      if(dispatch.irValues[5]>100){
+        //set west to 9
+        west = 8;
+      }
+      //Subtract the sum of north east and west from the value of wall reading
+      wallReading -= (north+east+west);
+      break;
+    case 2:
+      //if the forward sensor is tripped
+      if(dispatch.irValues[0]>100){
+        //set south to 2
+        south = 2;
+      }
+      //if the right sensor is tripped
+      if(dispatch.irValues[4]>100){
+        //set west to 8
+        west = 8;
+      }
+      //if the left sensor is tripped
+      if(dispatch.irValues[5]>100){
+        //set east to 4       
+        east = 4;
+      }
+      //subtract the sum from 15
+      wallReading-=(south+east+west);
+      break;
+    case 4:
+      //if the forward sensor is tripped
+      if(dispatch.irValues[0]>100){
+        //set east to 4
+        east = 4;
+      }
+      //if the right sensor is tripped
+      if(dispatch.irValues[4]>100){
+        //set south to 2
+        south = 2;
+      }
+      //if the left sensor is tripped
+      if(dispatch.irValues[5]>100){
+        //set north to 1
+        north = 1;
+      }
+      //subtract the sum from 15
+      wallReading-=(north+south+east);
+      break;
+    case 8:
+      //if the forward sensor is tripped
+      if(dispatch.irValues[0]>100){
+        //set east to 8
+        west = 8;
+      }
+      //if the right sensor is tripped
+      if(dispatch.irValues[4]>100){
+        //set north to 1
+        north = 1;
+      }
+      //if the left sensor is tripped
+      if(dispatch.irValues[5]>100){
+        //set south to 1
+        south = 2;
+      }
+      //subtract the sum from 15
+      wallReading-=(west+north+south);
+      break;
+  }
+  return wallReading;
 }
 
 int readAhead(){
   return 0;
 }
+*/
   
 
 /*
