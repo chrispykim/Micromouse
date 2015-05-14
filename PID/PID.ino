@@ -1,7 +1,7 @@
 void setup() {
 
   int Sum = 0;  
-  int ScaleFactor = 1;  // TBD
+  int ScaleFactor = 2;  // TBD
   int Kp = 1, Ki = 1, Kd = 1;  // constants for PID controller (TBD)
   int Threshold = 1;  // TBD
   int previous_error = analogRead(LeftSensor) - analogRead(RightSensor); // error value to initialize
